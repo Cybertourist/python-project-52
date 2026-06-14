@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load i18n %}
+
+{% block content %}
+<h1 class="my-4">
+    {% if request.resolver_match.url_name == 'login' %}
+        {% trans "Вход" %}
+    {% elif request.resolver_match.url_name == 'create_user' %}
+        {% trans "Регистрация" %}
+    {% else %}
+        {% trans "Изменение пользователя" %}
+    {% endif %}
+</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-primary">
+        {% if request.resolver_match.url_name == 'login' %}
+            {% trans "Войти" %}
+        {% elif request.resolver_match.url_name == 'create_user' %}
+            {% trans "Зарегистрировать" %}
+        {% else %}
+            {% trans "Изменить" %}
+        {% endif %}
+    </button>
+</form>
+{% endblock %}
