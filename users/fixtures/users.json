@@ -1,0 +1,12 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "admin",
+      "first_name": "Admin",
+      "last_name": "Adminov",
+      "password": "pbkdf2_sha256$600000$example$hash"
+    }
+  }
+]
