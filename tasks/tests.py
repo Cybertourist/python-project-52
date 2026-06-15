@@ -1,0 +1,47 @@
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth.models import User
+from statuses.models import Status
+from .models import Task
+
+class TestTaskCRUD(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.author = User.objects.create_user(username='author', password='password123')
+        self.other_user = User.objects.create_user(username='other', password='password123')
+        self.status = Status.objects.create(name='Новый')
+        self.task = Task.objects.create(
+            name='Тестовая задача',
+            status=self.status,
+            author=self.author
+        )
+
+    def test_task_list(self):
+        self.client.login(username='author', password='password123')
+        response = self.client.get(reverse('tasks'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_task_create(self):
+        self.client.login(username='author', password='password123')
+        data = {
+            'name': 'Новая уникальная задача',
+            'description': 'Описание',
+            'status': self.status.pk,
+        }
+        response = self.client.post(reverse('create_task'), data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Task.objects.filter(name='Новая уникальная задача').exists())
+        task = Task.objects.get(name='Новая уникальная задача')
+        self.assertEqual(task.author, self.author)
+
+    def test_task_delete_by_author(self):
+        self.client.login(username='author', password='password123')
+        response = self.client.post(reverse('delete_task', args=[self.task.pk]))
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Task.objects.filter(pk=self.task.pk).exists())
+
+    def test_task_delete_by_non_author(self):
+        self.client.login(username='other', password='password123')
+        response = self.client.post(reverse('delete_task', args=[self.task.pk]))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Task.objects.filter(pk=self.task.pk).exists())
