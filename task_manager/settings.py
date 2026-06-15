@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'users',
     'statuses.apps.StatusesConfig',
     'tasks',
+    'labels',
 ]
 
 MIDDLEWARE = [

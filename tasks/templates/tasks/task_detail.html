@@ -8,6 +8,16 @@
         <p><strong>Автор:</strong> {{ task.author.username }}</p>
         <p><strong>Исполнитель:</strong> {{ task.executor.username|default:"Не назначен" }}</p>
         <p><strong>Статус:</strong> {{ task.status.name }}</p>
+        
+        <p><strong>Метки:</strong></p>
+        <ul>
+            {% for label in task.labels.all %}
+                <li>{{ label.name }}</li>
+            {% empty %}
+                <li>Метки отсутствуют</li>
+            {% endfor %}
+        </ul>
+        
         <p><strong>Дата создания:</strong> {{ task.created_at|date:"d.m.Y H:i" }}</p>
     </div>
 </div>
