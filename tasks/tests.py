@@ -16,6 +16,25 @@ class TestTaskCRUD(TestCase):
             author=self.author
         )
 
+    def test_filter_by_status(self):
+        self.client.login(username='author', password='password123')
+        other_status = Status.objects.create(name='В работе')
+        Task.objects.create(name='Другая задача', status=other_status, author=self.author)
+
+        response = self.client.get(reverse('tasks'), {'status': self.status.pk})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['tasks']), 1)
+
+    def test_filter_only_my_tasks(self):
+        Task.objects.create(name='Чужая задача', status=self.status, author=self.other_user)
+
+        self.client.login(username='author', password='password123')
+        response = self.client.get(reverse('tasks'), {'only_my_tasks': 'on'})
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['tasks']), 1)
+        self.assertEqual(response.context['tasks'][0].name, 'Тестовая задача')
+
     def test_task_list(self):
         self.client.login(username='author', password='password123')
         response = self.client.get(reverse('tasks'))

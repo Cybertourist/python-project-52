@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from .models import Task
 from .forms import TaskForm
+from django_filters.views import FilterView
+from .filters import TaskFilter
 
 class AuthorPermissionMixin(UserPassesTestMixin):
     def test_func(self):
@@ -16,11 +18,18 @@ class AuthorPermissionMixin(UserPassesTestMixin):
         messages.error(self.request, 'Задачу может удалить только ее автор')
         return redirect('tasks')
 
-class TaskListView(LoginRequiredMixin, ListView):
+class TaskListView(LoginRequiredMixin, FilterView):
     model = Task
+    filterset_class = TaskFilter
     template_name = 'tasks/tasks.html'
     context_object_name = 'tasks'
     login_url = reverse_lazy('login')
+
+    def get_filterset_kwargs(self, filterset_class):
+        """Передаем request в filterset, чтобы внутри работал self.request.user"""
+        kwargs = super().get_filterset_kwargs(filterset_class)
+        kwargs['request'] = self.request
+        return kwargs
 
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
@@ -37,7 +46,6 @@ class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     login_url = reverse_lazy('login')
 
     def form_valid(self, form):
-        # Автоматически устанавливаем текущего пользователя автором задачи
         form.instance.author = self.request.user
         return super().form_valid(form)
 
