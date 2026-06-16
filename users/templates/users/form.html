@@ -15,14 +15,19 @@
 
 <form method="post">
     {% csrf_token %}
-    {% bootstrap_form form %}
+    {% for field in form %}
+        <div class="mb-3">
+            {% bootstrap_field field show_help=False %}
+        </div>
+    {% endfor %}
+    
     <button type="submit" class="btn btn-primary">
         {% if request.resolver_match.url_name == 'login' %}
-            {% trans "Войти" %}
+            Войти
         {% elif request.resolver_match.url_name == 'create_user' %}
-            {% trans "Зарегистрировать" %}
+            Зарегистрировать
         {% else %}
-            {% trans "Изменить" %}
+            Изменить
         {% endif %}
     </button>
 </form>

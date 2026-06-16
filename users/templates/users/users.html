@@ -8,8 +8,7 @@
         <tr>
             <th>ID</th>
             <th>{% trans "Имя пользователя" %}</th>
-            <th>{% trans "Имя" %}</th>
-            <th>{% trans "Фамилия" %}</th>
+            <th>{% trans "Полное имя" %}</th>
             <th>{% trans "Дата создания" %}</th>
             <th>{% trans "Действия" %}</th>
         </tr>
@@ -19,8 +18,7 @@
         <tr>
             <td>{{ user.id }}</td>
             <td>{{ user.username }}</td>
-            <td>{{ user.first_name }}</td>
-            <td>{{ user.last_name }}</td>
+            <td>{{ user.first_name }} {{ user.last_name }}</td>
             <td>{{ user.date_joined|date:"d.m.Y H:i" }}</td>
             <td>
                 <a href="{% url 'update_user' user.id %}">Изменить</a>
