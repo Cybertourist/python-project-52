@@ -4,6 +4,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.db.models import ProtectedError
 from .models import Label
 from .forms import LabelForm
 
@@ -37,8 +38,8 @@ class LabelDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     login_url = reverse_lazy('login')
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.tasks.exists():
-            messages.error(request, 'Невозможно удалить метку')
+        try:
+            return super().post(request, *args, **kwargs)
+        except ProtectedError:
+            messages.error(request, 'Не удалось удалить метку')
             return redirect('labels')
-        return super().post(request, *args, **kwargs)
