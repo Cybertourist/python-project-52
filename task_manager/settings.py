@@ -133,3 +133,15 @@ MESSAGE_TAGS = {
     messages.INFO: 'info',
     messages.WARNING: 'warning',
 }
+# Настройка Rollbar
+ROLLBAR_TOKEN = os.getenv('ROLLBAR_TOKEN')
+
+if ROLLBAR_TOKEN:
+    ROLLBAR = {
+        'access_token': ROLLBAR_TOKEN,
+        'environment': 'development' if DEBUG else 'production',
+        'branch': 'main',
+        'root': str(BASE_DIR),
+    }
+    
+    MIDDLEWARE.insert(0, 'rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
