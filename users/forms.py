@@ -14,3 +14,9 @@ class CustomUserCreationForm(UserCreationForm):
             'password1': 'Пароль',
             'password2': 'Подтверждение пароля',
         }
+        
+class CustomAuthenticationForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].label = 'Имя пользователя'
+        self.fields['password'].label = 'Пароль'

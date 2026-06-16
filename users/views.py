@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
@@ -7,8 +7,10 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
-
+from .forms import CustomAuthenticationForm
 from .forms import CustomUserCreationForm
+
+User = get_user_model()
 
 class UserPermissionMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
@@ -45,6 +47,7 @@ class UserDeleteView(UserPermissionMixin, SuccessMessageMixin, DeleteView):
 
 class UserLoginView(SuccessMessageMixin, LoginView):
     template_name = 'users/form.html'
+    form_class = CustomAuthenticationForm
     next_page = reverse_lazy('index')
     success_message = _('Вы залогинены')
 
