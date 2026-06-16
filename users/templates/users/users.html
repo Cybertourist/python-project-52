@@ -14,16 +14,18 @@
         </tr>
     </thead>
     <tbody>
-        {% for user in users %}
+        {% for u in users %}
         <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.first_name }} {{ user.last_name }}</td>
-            <td>{{ user.date_joined|date:"d.m.Y H:i" }}</td>
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+            <td>{{ u.first_name }} {{ u.last_name }}</td>
+            <td>{{ u.date_joined|date:"d.m.Y H:i" }}</td>
             <td>
-                <a href="{% url 'update_user' user.id %}">Изменить</a>
-                <br>
-                <a href="{% url 'delete_user' user.id %}">Удалить</a>
+                {% if u.id == request.user.id %}
+                    <a href="{% url 'update_user' u.id %}">Изменить</a>
+                    <br>
+                    <a href="{% url 'delete_user' u.id %}">Удалить</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
