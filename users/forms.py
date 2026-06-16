@@ -15,8 +15,8 @@ class CustomUserCreationForm(UserCreationForm):
             'password2': 'Подтверждение пароля',
         }
 
-class CustomAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['username'].label = 'Имя пользователя'
-        self.fields['password'].label = 'Пароль'
+        self.label_suffix = ""
+        self.fields['password1'].help_text = ""
+        self.fields['password2'].help_text = ""
