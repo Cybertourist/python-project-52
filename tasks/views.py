@@ -1,13 +1,20 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
-from django.contrib import messages
 from django.shortcuts import redirect
-from .models import Task
-from .forms import TaskForm
+from django.urls import reverse_lazy
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    UpdateView,
+)
 from django_filters.views import FilterView
+
 from .filters import TaskFilter
+from .forms import TaskForm
+from .models import Task
+
 
 class AuthorPermissionMixin(UserPassesTestMixin):
     def test_func(self):
@@ -26,7 +33,10 @@ class TaskListView(LoginRequiredMixin, FilterView):
     login_url = reverse_lazy('login')
 
     def get_filterset_kwargs(self, filterset_class):
-        """Передаем request в filterset, чтобы внутри работал self.request.user"""
+        """
+        Передаем request в filterset,
+        чтобы внутри работал self.request.user.
+        """
         kwargs = super().get_filterset_kwargs(filterset_class)
         kwargs['request'] = self.request
         return kwargs
@@ -57,7 +67,9 @@ class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = 'Задача успешно изменена'
     login_url = reverse_lazy('login')
 
-class TaskDeleteView(LoginRequiredMixin, AuthorPermissionMixin, SuccessMessageMixin, DeleteView):
+class TaskDeleteView(
+    LoginRequiredMixin, AuthorPermissionMixin, SuccessMessageMixin, DeleteView
+):
     model = Task
     template_name = 'tasks/delete.html'
     success_url = reverse_lazy('tasks')

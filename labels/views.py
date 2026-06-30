@@ -1,12 +1,13 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
-from django.contrib import messages
 from django.shortcuts import redirect
-from django.db.models import ProtectedError
-from .models import Label
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
 from .forms import LabelForm
+from .models import Label
+
 
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label
@@ -38,8 +39,11 @@ class LabelDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     login_url = reverse_lazy('login')
 
     def post(self, request, *args, **kwargs):
-        try:
-            return super().post(request, *args, **kwargs)
-        except ProtectedError:
-            messages.error(request, 'Не удалось удалить метку')
+        self.object = self.get_object()
+        if self.object.tasks.exists():
+            messages.error(
+                request,
+                'Невозможно удалить метку, потому что она используется'
+            )
             return redirect('labels')
+        return super().post(request, *args, **kwargs)

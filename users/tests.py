@@ -1,6 +1,7 @@
-from django.test import TestCase, Client
-from django.urls import reverse
 from django.contrib.auth.models import User
+from django.test import Client, TestCase
+from django.urls import reverse
+
 
 class TestUserViewSet(TestCase):
     fixtures = ['users.json']
@@ -26,7 +27,10 @@ class TestUserViewSet(TestCase):
         response = self.client.post(reverse('create_user'), data)
         
         if response.status_code == 200:
-            self.fail(f"Form submission failed: {response.context['form'].errors}")
+            self.fail(
+                "Form submission failed: "
+                f"{response.context['form'].errors}"
+            )
             
         self.assertEqual(response.status_code, 302)
         self.assertTrue(User.objects.filter(username='newuser').exists())
@@ -43,7 +47,9 @@ class TestUserViewSet(TestCase):
             'password1': 'VeryComplexPassword123!',
             'password2': 'VeryComplexPassword123!',
         }
-        response = self.client.post(reverse('update_user', args=[self.user.pk]), data)
+        response = self.client.post(
+            reverse('update_user', args=[self.user.pk]), data
+        )
         
         if response.status_code == 200:
             self.fail(f"Update failed: {response.context['form'].errors}")
@@ -58,7 +64,9 @@ class TestUserViewSet(TestCase):
         self.client.login(username='admin', password='admin')
         
         data = {'username': 'other', 'first_name': 'Hacked'}
-        response = self.client.post(reverse('update_user', args=[other_user.pk]), data)
+        response = self.client.post(
+            reverse('update_user', args=[other_user.pk]), data
+        )
         
         self.assertEqual(response.status_code, 302)
         other_user.refresh_from_db()

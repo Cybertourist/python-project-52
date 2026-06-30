@@ -8,9 +8,7 @@ load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-LOCALE_PATHS = [
-    BASE_DIR / 'locale',
-]
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -110,10 +108,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
+LOCALE_PATHS = [BASE_DIR / 'locale']
+
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-USE_L10N = True
 
 USE_TZ = True
 
@@ -147,3 +146,12 @@ if ROLLBAR_TOKEN:
     }
     
     MIDDLEWARE.insert(0, 'rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}

@@ -1,14 +1,14 @@
+from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import redirect
-from .forms import CustomAuthenticationForm
-from .forms import CustomUserCreationForm
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
+from .forms import CustomAuthenticationForm, CustomUserCreationForm
 
 User = get_user_model()
 
@@ -17,7 +17,10 @@ class UserPermissionMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.pk == self.kwargs.get('pk')
 
     def handle_no_permission(self):
-        messages.error(self.request, _('У вас нет прав для изменения другого пользователя.'))
+        messages.error(
+            self.request,
+            _('У вас нет прав для изменения другого пользователя.'),
+        )
         return redirect('users')
 
 class UserListView(ListView):

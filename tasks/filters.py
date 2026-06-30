@@ -1,14 +1,18 @@
 from django import forms
-import django_filters
-from django_filters import FilterSet, BooleanFilter, ModelChoiceFilter
-from .models import Task
-from statuses.models import Status
 from django.contrib.auth.models import User
+from django_filters import BooleanFilter, FilterSet, ModelChoiceFilter
+
 from labels.models import Label
+from statuses.models import Status
+
+from .models import Task
+
 
 class TaskFilter(FilterSet):
     status = ModelChoiceFilter(queryset=Status.objects.all(), label='Статус')
-    executor = ModelChoiceFilter(queryset=User.objects.all(), label='Исполнитель')
+    executor = ModelChoiceFilter(
+        queryset=User.objects.all(), label='Исполнитель'
+    )
     labels = ModelChoiceFilter(queryset=Label.objects.all(), label='Метка')
 
     only_my_tasks = BooleanFilter(
