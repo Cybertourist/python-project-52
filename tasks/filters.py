@@ -25,6 +25,12 @@ class TaskFilter(FilterSet):
         model = Task
         fields = ['status', 'executor', 'labels']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.filters['executor'].field.label_from_instance = (
+            lambda obj: obj.get_full_name() or obj.username
+        )
+
     def filter_my_tasks(self, queryset, name, value):
         if value and self.request.user.is_authenticated:
             return queryset.filter(author=self.request.user)

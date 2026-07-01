@@ -18,11 +18,20 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'users' %}">Пользователи</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Вход</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'create_user' %}">Регистрация</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'statuses' %}">Статусы</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'tasks' %}">Задачи</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'labels' %}">Метки</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'statuses' %}">Статусы</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'tasks' %}">Задачи</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'labels' %}">Метки</a></li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link btn btn-link p-0">Выход</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Вход</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'create_user' %}">Регистрация</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
