@@ -1,7 +1,9 @@
-[lint]
-select = ["E", "F", "I", "C90"]
+line-length = 80
+
 exclude = [
     "migrations",
-    "settings.py"
+    "settings.py",
 ]
-line-length = 80
+
+[lint]
+select = ["E", "F", "I", "C90"]
